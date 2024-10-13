@@ -217,10 +217,10 @@ function Home() {
 
             {/* Chỉ hiển thị button cho người dùng */}
             {!showPopup && user && (
-                <div className="user-buttons mt-4 d-flex justify-content-center flex-wrap">
+                <div className="user-button-container">
                     <button
                         onClick={handleUserClick}
-                        disabled={disqualifiedUsers.includes(user.email) || fastestUser !== null}
+                        disabled={!isUnlocked || disqualifiedUsers.includes(user.email) || fastestUser !== null}
                         className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""}`}
                     >
                         {clickedUsers.includes(user.email) ? "Bạn đã bấm!" : "Bấm để tham gia!"}
