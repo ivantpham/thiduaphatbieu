@@ -178,7 +178,7 @@ function Home() {
             {/* Header containing logo and title */}
             <div className="header">
                 <img src={`${process.env.PUBLIC_URL}/logo1.png`} alt="Logo" className="logo mb-4" />
-                <h1>Tranh Đua Phát Biểu</h1>
+                <h1>Thi Đua Phát Biểu</h1>
             </div>
 
             {/* Kiểm tra xem người dùng có phải là admin không */}
@@ -215,12 +215,18 @@ function Home() {
                 </div>
             )}
 
-            {/* Chỉ hiển thị button cho người dùng */}
-            {!showPopup && user && (
+            {/* Chỉ hiển thị button cho người dùng nếu không bị loại */}
+            {!showPopup && user && !disqualifiedUsers.includes(user.email) && (
                 <div className="user-button-container">
                     <button
-                        onClick={handleUserClick}
-                        disabled={!isUnlocked || disqualifiedUsers.includes(user.email) || fastestUser !== null}
+                        onClick={() => {
+                            if (!isUnlocked) {
+                                alert(`${userName} đã bấm trước khi mở khóa và bị loại!`);
+                                setDisqualifiedUsers((prevDisqualified) => [...prevDisqualified, user.email]);
+                            } else {
+                                handleUserClick();
+                            }
+                        }}
                         className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""}`}
                     >
                         {clickedUsers.includes(user.email) ? "Bạn đã bấm!" : "Bấm để tham gia!"}
@@ -228,22 +234,28 @@ function Home() {
                 </div>
             )}
 
-            {/* Popup thông báo kết quả */}
+            {/* Popup thông báo khi có người dùng bấm */}
             {showPopup && (
-                <div className="result-popup">
-                    <h2>Kết quả cuộc thi:</h2>
-                    <p>{fastestUser} đã thắng với thời gian {time} ms!</p>
-                    <button onClick={() => setShowPopup(false)}>Đóng</button>
+                <div className="popup">
+                    <h2>Chúc mừng!</h2>
+                    <p>{fastestUser} là người bấm nhanh nhất với thời gian: {time} ms.</p>
+                    <button onClick={() => setShowPopup(false)} className="btn btn-secondary">
+                        Đóng
+                    </button>
                 </div>
             )}
 
-            {/* Popup thay đổi tên */}
+            {/* Hiển thị popup thay đổi tên */}
             {showChangeNamePopup && (
                 <ChangeName
+                    setShowChangeNamePopup={setShowChangeNamePopup}
                     userEmail={user.email}
-                    onClose={() => setShowChangeNamePopup(false)}
+                    setUserName={setUserName} // Truyền hàm setUserName để cập nhật state
                 />
             )}
+
+            {/* Hiển thị popup đăng nhập nếu chưa đăng nhập */}
+            {!user && <Login />}
         </div>
     );
 }
