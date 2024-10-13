@@ -1,0 +1,191 @@
+/* Đặt màu nền tổng thể cho toàn bộ ứng dụng */
+body {
+  background-color: #282c34;
+  color: white;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  margin-top: 150px;
+  /* Giá trị này phải bằng chiều cao của .header-container */
+}
+/* Định dạng container cho header */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 150px;
+  /* Chiều cao của header */
+  background-color: #282c34;
+  /* Màu nền giống với phần còn lại */
+  z-index: 100;
+}
+/* Định dạng logo và tiêu đề */
+.header {
+  text-align: center;
+}
+.logo {
+  width: 300px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+/* Định dạng popup đăng nhập */
+.login-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  max-width: 400px;
+  width: 100%;
+}
+/* Định dạng cho popup */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  max-width: 400px;
+  width: 100%;
+}
+/* Nền overlay mờ */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+/* Định dạng popup nội dung */
+.popup-content {
+  display: flex;
+  flex-direction: column;
+}
+/* Định dạng nút người chơi */
+.user-buttons {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.user-button {
+  width: 150px;
+  /* Có thể giữ nguyên hoặc điều chỉnh kích thước */
+  height: 150px;
+  /* Thay đổi chiều cao */
+  font-size: 1.5rem;
+  /* Tăng kích thước chữ */
+  margin: 10px;
+  padding: 0;
+  /* Giảm padding nếu cần */
+  display: flex;
+  /* Để căn giữa chữ */
+  align-items: center;
+  /* Căn giữa theo chiều dọc */
+  justify-content: center;
+  /* Căn giữa theo chiều ngang */
+}
+.user-button:hover {
+  background-color: #0056b3;
+  /* Màu nền khi hover */
+}
+.user-button.clicked {
+  background-color: #28a745;
+  /* Màu nền khi clicked */
+}
+.user-button.disqualified {
+  background-color: #dc3545;
+  /* Màu nền khi bị loại */
+  cursor: not-allowed;
+  /* Không cho phép click */
+}
+/* Định dạng kết quả */
+.result-section {
+  margin-top: 20px;
+}
+/* Định dạng nút Reset */
+.reset-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.reset-button:hover {
+  background-color: #e6b800;
+}
+/* Định dạng các nút trong popup */
+.close-popup-button {
+  padding: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.close-popup-button:hover {
+  background-color: #c82333;
+}
+/* Định dạng nút đăng nhập */
+.login-submit-button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.login-submit-button:hover {
+  background-color: #218838;
+}
+/* Định dạng nút mở khóa */
+.unlock-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.unlock-button:hover {
+  background-color: #e0a800;
+  transform: scale(1.05);
+}
+/* Định dạng nút người chơi */
+.user-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.user-button {
+  width: 150px;
+  margin: 10px;
+}
+.user-button.disqualified {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+/* Định dạng nút cho người dùng */
+.user-greeting {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}

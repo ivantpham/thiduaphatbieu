@@ -1,0 +1,111 @@
+/* Căn giữa container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Đảm bảo chiều cao toàn bộ màn hình */
+    background-color: #343a40;
+    /* Màu nền tối */
+}
+
+/* Nút đăng nhập */
+.login-button {
+    padding: 10px 20px;
+}
+
+/* Popup đăng nhập */
+.login-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #495057;
+    /* Màu nền popup */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    /* Đổ bóng */
+    border-radius: 8px;
+    /* Viền bo tròn */
+    width: 320px;
+    /* Chiều rộng popup */
+    z-index: 1000;
+    /* Đảm bảo popup nằm trên cùng */
+
+    width: 500px;
+    /* Thay đổi chiều rộng ở đây */
+    height: 670px;
+    /* Thêm chiều cao nếu cần */
+}
+
+/* Nội dung popup */
+.login-popup-content {
+    position: relative;
+    /* Để đặt nút đóng */
+}
+
+/* Nút đóng popup */
+.close-popup-button {
+    position: absolute;
+    top: 10px;
+    /* Cách từ đỉnh */
+    right: 10px;
+    /* Cách từ bên phải */
+    background: none;
+    /* Không nền */
+    border: none;
+    /* Không viền */
+    font-size: 20px;
+    /* Kích thước chữ */
+    cursor: pointer;
+    /* Con trỏ chuột dạng tay */
+    color: white;
+    /* Màu chữ */
+}
+
+/* Tiêu đề popup */
+.login-header {
+    margin-bottom: 10px;
+    /* Khoảng cách dưới tiêu đề */
+    font-size: 26px;
+    /* Kích thước chữ */
+    font-weight: bold;
+    /* Chữ đậm */
+    color: #ffffff;
+    /* Màu chữ */
+}
+
+/* Đoạn văn hướng dẫn */
+.login-subtext {
+    margin-bottom: 20px;
+    /* Khoảng cách dưới đoạn văn */
+    color: #cccccc;
+    /* Màu chữ */
+}
+
+/* Nhóm trường nhập liệu */
+.login-form-group {
+    margin-bottom: 15px;
+    /* Khoảng cách giữa các trường */
+}
+
+/* Thông báo nếu chưa có tài khoản */
+.contact-info {
+    margin-top: 15px;
+    /* Khoảng cách trên thông báo */
+    color: #ffffff;
+    /* Màu chữ */
+    font-size: 14px;
+    /* Kích thước chữ */
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    /* Căn giữa theo chiều ngang */
+    align-items: flex-start;
+    /* Căn phần tử con sát phía trên */
+    height: 100vh;
+    background-color: #282c34;
+    padding-top: 20px;
+    /* Thêm khoảng cách nếu cần giữa đầu trang và nút */
+}
