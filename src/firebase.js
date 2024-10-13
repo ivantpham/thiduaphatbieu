@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database"; // Realtime Database
 import { getFirestore } from "firebase/firestore"; // Cloud Firestore
 
-// Cấu hình từ Firebase Console
+// Cấu hình Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBnlMKiXTYDFlqDCxjWCEYvLoQxDvDITOc",
     authDomain: "thiduaphatbieu.firebaseapp.com",
@@ -17,7 +17,7 @@ const firebaseConfig = {
 // Khởi tạo Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase(app);  // Khởi tạo Realtime Database
-const firestore = getFirestore(app); // Khởi tạo Cloud Firestore
+const database = getDatabase(app);  // Realtime Database
+const firestore = getFirestore(app); // Cloud Firestore
 
-export { auth, database, firestore }; // Export thêm firestore
+export { auth, database, firestore };

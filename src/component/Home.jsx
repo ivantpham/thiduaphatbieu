@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../style/Home.css";
-import Login from "./Login"; // Import component LoginPopup
+import Login from "./Login"; // Import component Login
 import ChangeName from "./ChangeName"; // Import ChangeName component
 import { useUser } from "../context/UserContext"; // Import useUser để lấy thông tin người dùng
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { signOut } from 'firebase/auth'; // Import signOut từ Firebase
-import { auth } from '../firebase'; // Đảm bảo đường dẫn đúng đến file firebase.js
-import { ref, set, onValue } from "firebase/database"; // Import các hàm cần thiết từ Firebase
-import { database } from '../firebase'; // Đảm bảo đường dẫn đúng đến file firebase.js
+import { auth, database } from '../firebase'; // Đảm bảo đường dẫn đúng đến file firebase.js
+import { ref, set, onValue } from "firebase/database"; // Firebase Database functions
 
 function Home() {
     const { user, setUser } = useUser(); // Lấy thông tin người dùng từ context
@@ -36,16 +35,29 @@ function Home() {
     }, [user]);
 
     useEffect(() => {
-        // Lắng nghe sự thay đổi từ Realtime Database
-        const competitionStatusRef = ref(database, 'competitionStatus');
-        const unsubscribe = onValue(competitionStatusRef, (snapshot) => {
+        // Lắng nghe trạng thái mở khóa từ Realtime Database
+        const unlockStatusRef = ref(database, 'competition/isUnlocked');
+
+        const unsubscribe = onValue(unlockStatusRef, (snapshot) => {
+            const data = snapshot.val();
+            setIsUnlocked(data);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        // Lắng nghe fastestUser từ Realtime Database
+        const fastestUserRef = ref(database, 'competition/fastestUser');
+
+        const unsubscribe = onValue(fastestUserRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                setIsUnlocked(data.unlocked); // Cập nhật trạng thái isUnlocked
+                setFastestUser(data.fastestUser);
+                setTime(data.time);
             }
         });
 
-        // Dọn dẹp sau khi component unmount
         return () => unsubscribe();
     }, []);
 
@@ -56,15 +68,15 @@ function Home() {
         setClickedUsers([]);
         setShowPopup(false);
 
-        // Cập nhật trạng thái mở khóa vào Realtime Database
         try {
-            await set(ref(database, 'competitionStatus'), { unlocked: true });
+            // Cập nhật trạng thái mở khóa vào Realtime Database
+            await set(ref(database, 'competition/isUnlocked'), true);
         } catch (error) {
-            console.error("Error updating database: ", error);
+            console.error('Error updating database:', error);
         }
     };
 
-    const handleUserClick = () => {
+    const handleUserClick = async () => {
         const currentUserName = userName; // Sử dụng userName đã lấy từ state
         if (disqualifiedUsers.includes(currentUserName)) {
             alert(`${currentUserName} đã bị loại và không thể tham gia.`);
@@ -78,6 +90,16 @@ function Home() {
             const currentTime = new Date().getTime();
             setFastestUser(currentUserName);
             setTime(currentTime);
+
+            try {
+                // Cập nhật fastestUser và thời gian vào Realtime Database
+                await set(ref(database, 'competition/fastestUser'), {
+                    fastestUser: currentUserName,
+                    time: currentTime,
+                });
+            } catch (error) {
+                console.error('Error updating database:', error);
+            }
         }
 
         setClickedUsers((prevUsers) => {
@@ -154,10 +176,10 @@ function Home() {
                     <button
                         onClick={handleUserClick}
                         disabled={disqualifiedUsers.includes(user.email) || fastestUser !== null}
-                        className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${(!isUnlocked && disqualifiedUsers.includes(user.email)) ? "btn-danger" : ""} m-2`}
+                        className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""} m-2`}
                         style={{ width: '150px' }}
                     >
-                        {userName} {(!isUnlocked && disqualifiedUsers.includes(user.email)) ? "(Bị loại)" : ""} {/* Hiển thị userName nếu có */}
+                        {userName} {disqualifiedUsers.includes(user.email) ? "(Bị loại)" : ""} {/* Hiển thị userName nếu có */}
                     </button>
                 </div>
             )}
