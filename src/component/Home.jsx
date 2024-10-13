@@ -61,6 +61,18 @@ function Home() {
         return () => unsubscribe();
     }, []);
 
+    // Lắng nghe trạng thái reset để tự động reload trang
+    useEffect(() => {
+        const resetRef = ref(database, 'competition/reset');
+        const unsubscribe = onValue(resetRef, (snapshot) => {
+            const resetStatus = snapshot.val();
+            if (resetStatus) {
+                window.location.reload(); // Reload lại trang khi nhận tín hiệu reset
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
     const handleUnlock = async () => {
         setIsUnlocked(true);
         setFastestUser(null);
@@ -111,13 +123,27 @@ function Home() {
         });
     };
 
-    const resetCompetition = () => {
+    const resetCompetition = async () => {
         setIsUnlocked(false);
         setFastestUser(null);
         setTime(null);
         setClickedUsers([]);
         setDisqualifiedUsers([]);
         setShowPopup(false);
+
+        try {
+            // Cập nhật trạng thái mở khóa và reset vào Realtime Database
+            await set(ref(database, 'competition/isUnlocked'), false);
+            await set(ref(database, 'competition/reset'), true); // Truyền trạng thái reset vào database
+
+            // Sau 1 giây, đặt lại reset thành false để lắng nghe thay đổi trong tương lai
+            setTimeout(async () => {
+                await set(ref(database, 'competition/reset'), false);
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error updating database:', error);
+        }
     };
 
     const handleSignOut = async () => {
@@ -203,11 +229,21 @@ function Home() {
                 </div>
             )}
 
-            {/* Import LoginPopup component */}
-            {!user && <Login />}
+            {/* Hiển thị popup khi đủ người chơi */}
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>Cuộc thi đã kết thúc!</h2>
+                        <p>Người chiến thắng: {fastestUser}</p>
+                        <button onClick={() => setShowPopup(false)} className="btn btn-primary">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            )}
 
-            {/* Hiển thị ChangeName popup nếu cần */}
-            {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
+            {/* Hiển thị component Login hoặc ChangeName popup */}
+            {!user ? <Login /> : showChangeNamePopup && <ChangeName closePopup={() => setShowChangeNamePopup(false)} />}
         </div>
     );
 }
