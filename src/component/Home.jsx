@@ -228,25 +228,22 @@ function Home() {
                 </div>
             )}
 
-            {/* Hiển thị popup nếu có người đã bấm */}
+            {/* Popup thông báo kết quả */}
             {showPopup && (
                 <div className="result-popup">
-                    <h2>Kết quả</h2>
-                    <h3>Người tham gia: {clickedUsers.join(", ")}</h3>
-                    {fastestUser && (
-                        <h4>
-                            Người chiến thắng: {fastestUser} ({new Date(time).toLocaleTimeString()})
-                        </h4>
-                    )}
-                    <button onClick={() => setShowPopup(false)} className="btn btn-secondary">Đóng</button>
+                    <h2>Kết quả cuộc thi:</h2>
+                    <p>{fastestUser} đã thắng với thời gian {time} ms!</p>
+                    <button onClick={() => setShowPopup(false)}>Đóng</button>
                 </div>
             )}
 
-            {/* Hiển thị popup để thay đổi tên */}
-            {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
-
-            {/* Hiển thị Login component nếu chưa có người dùng */}
-            {!user && <Login />}
+            {/* Popup thay đổi tên */}
+            {showChangeNamePopup && (
+                <ChangeName
+                    userEmail={user.email}
+                    onClose={() => setShowChangeNamePopup(false)}
+                />
+            )}
         </div>
     );
 }
