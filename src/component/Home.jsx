@@ -21,6 +21,7 @@ function Home() {
     const totalUsers = 1; // Đổi số lượng người dùng thành 1
 
     const [userName, setUserName] = useState(''); // Thêm state cho userName
+    const [resetButton, setResetButton] = useState(false); // State để lưu giá trị của resetButton
 
     useEffect(() => {
         // Kiểm tra user.email tồn tại và localStorage có giá trị userName không
@@ -37,13 +38,28 @@ function Home() {
     useEffect(() => {
         // Lắng nghe trạng thái mở khóa từ Realtime Database
         const unlockStatusRef = ref(database, 'competition/isUnlocked');
+        const resetButtonRef = ref(database, 'competition/resetButton');
 
-        const unsubscribe = onValue(unlockStatusRef, (snapshot) => {
+        const unsubscribeUnlock = onValue(unlockStatusRef, (snapshot) => {
             const data = snapshot.val();
             setIsUnlocked(data);
         });
 
-        return () => unsubscribe();
+        const unsubscribeResetButton = onValue(resetButtonRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setResetButton(data);
+                // Tải lại trang nếu resetButton là true
+                if (data === true) {
+                    window.location.reload(); // Tải lại trang
+                }
+            }
+        });
+
+        return () => {
+            unsubscribeUnlock();
+            unsubscribeResetButton();
+        };
     }, []);
 
     useEffect(() => {
@@ -61,17 +77,23 @@ function Home() {
         return () => unsubscribe();
     }, []);
 
-    // Lắng nghe trạng thái reset để tự động reload trang
+    // Thêm useEffect để cập nhật giá trị khi trang tải lại
     useEffect(() => {
-        const resetRef = ref(database, 'competition/reset');
-        const unsubscribe = onValue(resetRef, (snapshot) => {
-            const resetStatus = snapshot.val();
-            if (resetStatus) {
-                window.location.reload(); // Reload lại trang khi nhận tín hiệu reset
+        const resetCompetitionValues = async () => {
+            try {
+                // Đặt giá trị cho competition/resetButton là false và competition/fastestUser là rỗng
+                await set(ref(database, 'competition/resetButton'), false);
+                await set(ref(database, 'competition/fastestUser'), {
+                    fastestUser: "", // Gán giá trị rỗng
+                    time: null, // Gán thời gian là null
+                });
+            } catch (error) {
+                console.error('Error resetting competition values:', error);
             }
-        });
-        return () => unsubscribe();
-    }, []);
+        };
+
+        resetCompetitionValues();
+    }, []); // Chạy chỉ một lần khi component được mount
 
     const handleUnlock = async () => {
         setIsUnlocked(true);
@@ -132,15 +154,9 @@ function Home() {
         setShowPopup(false);
 
         try {
-            // Cập nhật trạng thái mở khóa và reset vào Realtime Database
+            // Cập nhật trạng thái mở khóa và resetButton vào Realtime Database
             await set(ref(database, 'competition/isUnlocked'), false);
-            await set(ref(database, 'competition/reset'), true); // Truyền trạng thái reset vào database
-
-            // Sau 1 giây, đặt lại reset thành false để lắng nghe thay đổi trong tương lai
-            setTimeout(async () => {
-                await set(ref(database, 'competition/reset'), false);
-            }, 1000);
-
+            await set(ref(database, 'competition/resetButton'), true); // Đặt resetButton là true
         } catch (error) {
             console.error('Error updating database:', error);
         }
@@ -170,6 +186,9 @@ function Home() {
                 <div className="moderator-section">
                     <button onClick={handleUnlock} className="unlock-button btn btn-primary">
                         {isUnlocked ? "Đã mở khóa!" : "Mở khóa cho người chơi"}
+                    </button>
+                    <button onClick={resetCompetition} className="reset-button btn btn-warning">
+                        Reset Cuộc Thi
                     </button>
                 </div>
             )}
@@ -202,48 +221,32 @@ function Home() {
                     <button
                         onClick={handleUserClick}
                         disabled={disqualifiedUsers.includes(user.email) || fastestUser !== null}
-                        className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""} m-2`}
-                        style={{ width: '150px' }}
+                        className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""}`}
                     >
-                        {userName} {disqualifiedUsers.includes(user.email) ? "(Bị loại)" : ""} {/* Hiển thị userName nếu có */}
+                        {clickedUsers.includes(user.email) ? "Bạn đã bấm!" : "Bấm để tham gia!"}
                     </button>
                 </div>
             )}
 
-            {fastestUser && (
-                <div className="result-section mt-4">
-                    <h1 style={{ fontSize: '4rem', fontWeight: 'bold', color: 'yellow' }}>
-                        {fastestUser} <span style={{ color: 'white' }}>nhấn đầu tiên!</span>
-                    </h1>
-
-                    <p>Thời gian: {new Date(time).toLocaleTimeString()}</p>
-                </div>
-            )}
-
-            {/* Nút Reset chỉ hiển thị cho admin */}
-            {user && user.email === 'admin@btnntp.com' && (
-                <div className="reset-section mt-4">
-                    <button onClick={resetCompetition} className="reset-button btn btn-warning">
-                        Reset Cuộc Thi
-                    </button>
-                </div>
-            )}
-
-            {/* Hiển thị popup khi đủ người chơi */}
+            {/* Hiển thị popup nếu có người đã bấm */}
             {showPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h2>Cuộc thi đã kết thúc!</h2>
-                        <p>Người chiến thắng: {fastestUser}</p>
-                        <button onClick={() => setShowPopup(false)} className="btn btn-primary">
-                            Đóng
-                        </button>
-                    </div>
+                <div className="result-popup">
+                    <h2>Kết quả</h2>
+                    <h3>Người tham gia: {clickedUsers.join(", ")}</h3>
+                    {fastestUser && (
+                        <h4>
+                            Người chiến thắng: {fastestUser} ({new Date(time).toLocaleTimeString()})
+                        </h4>
+                    )}
+                    <button onClick={() => setShowPopup(false)} className="btn btn-secondary">Đóng</button>
                 </div>
             )}
 
-            {/* Hiển thị component Login hoặc ChangeName popup */}
-            {!user ? <Login /> : showChangeNamePopup && <ChangeName closePopup={() => setShowChangeNamePopup(false)} />}
+            {/* Hiển thị popup để thay đổi tên */}
+            {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
+
+            {/* Hiển thị Login component nếu chưa có người dùng */}
+            {!user && <Login />}
         </div>
     );
 }
