@@ -90,6 +90,11 @@ function Home() {
             if (data) {
                 setFastestUser(data.fastestUser);
                 setTime(data.time);
+
+                // Kiểm tra nếu người dùng là kythuat@btnntp.com
+                if (data.fastestUser === 'kythuat@btnntp.com') {
+                    setShowPopup(true); // Hiển thị popup ngay lập tức
+                }
             }
         });
 
@@ -190,7 +195,6 @@ function Home() {
         });
     };
 
-
     const resetCompetition = async () => {
         console.log("Resetting competition data..."); // Thêm dòng log ở đây
         setIsUnlocked(false);
@@ -209,11 +213,6 @@ function Home() {
             console.error('Error updating database:', error);
         }
     };
-
-
-
-
-
 
     const handleSignOut = async () => {
         try {
@@ -243,7 +242,6 @@ function Home() {
                             Reset Cuộc Thi
                         </button>
                     </div>
-
                 </div>
             )}
 
@@ -258,34 +256,31 @@ function Home() {
                     {showDropdown && (
                         <div className="dropdown-menu show" style={{ position: 'absolute', right: '0', zIndex: 1000 }}>
                             <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>
-                                Thay đổi thông tin
+                                Đổi tên
                             </button>
                             <button className="dropdown-item" onClick={handleSignOut}>
-                                Sign Out
+                                Đăng xuất
                             </button>
                         </div>
                     )}
                 </div>
             )}
 
-            {!showPopup && user && user.email !== 'admin@btnntp.com' && user.email !== 'kythuat@btnntp.com' && (
-                <div className="user-button-container">
-                    <button
-                        onClick={() => {
-                            if (!isUnlocked) {
-                                alert(`${userName} đã bấm trước khi mở khóa và bị loại!`);
-                                setDisqualifiedUsers((prevDisqualified) => [...prevDisqualified, user.email]);
-                            } else {
-                                handleUserClick();
-                            }
-                        }}
-                        className={`btn user-button ${clickedUsers.includes(user.email) ? "btn-success" : "btn-primary"} ${disqualifiedUsers.includes(user.email) ? "btn-danger" : ""}`}
-                    >
-                        {clickedUsers.includes(user.email) ? "Bạn đã bấm!" : "Bấm nhanh!"}
+            {!user && (
+                <Login />
+            )}
+
+            {showChangeNamePopup && (
+                <ChangeName closePopup={() => setShowChangeNamePopup(false)} />
+            )}
+
+            {isUnlocked && user && (
+                <div className="play-section">
+                    <button onClick={handleUserClick} className="play-button btn btn-success">
+                        Bấm để tham gia
                     </button>
                 </div>
             )}
-
 
             {/* Popup thông báo khi có người dùng bấm */}
             {showPopup && (
@@ -314,12 +309,6 @@ function Home() {
                         Đóng
                     </button>
                 </div>
-            )}
-
-            {!user && <Login />}
-
-            {showChangeNamePopup && (
-                <ChangeName onClose={() => setShowChangeNamePopup(false)} />
             )}
         </div>
     );
