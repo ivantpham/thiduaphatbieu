@@ -50,8 +50,7 @@ body {
     width: 100%;
 }
 
-/* Định dạng cho popup */
-.popup {
+.App .popup {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -61,9 +60,12 @@ body {
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     z-index: 1001;
-    max-width: 400px;
-    width: 100%;
+    max-height: 7;
+    max-width: 800px;
+    width: 1000px;
+    height: auto;
 }
+
 
 /* Nền overlay mờ */
 .popup-overlay {
@@ -214,4 +216,72 @@ body {
     top: 20px;
     right: 20px;
     z-index: 100;
+}
+
+.fastest-user-message {
+    color: black;
+    /* Màu chữ đen */
+    font-size: 1.5rem;
+    /* Tăng kích thước font chữ */
+    font-weight: bold;
+    /* Đậm chữ */
+}
+
+.fastest-user-container {
+    text-align: center;
+    /* Căn giữa nếu cần */
+}
+
+.fastest-user {
+    color: red;
+    /* Màu đỏ */
+    font-weight: bold;
+    /* Đậm */
+    font-size: 2rem;
+    /* Kích thước lớn gấp đôi */
+}
+
+.time-message {
+    margin-top: 10px;
+    /* Khoảng cách giữa fastestUser và time */
+    font-size: 1rem;
+    /* Kích thước chữ bình thường */
+}
+
+.fastest-user-container {
+    text-align: center;
+    /* Căn giữa nếu cần */
+}
+
+.fastest-user {
+    color: red;
+    /* Màu đỏ */
+    font-weight: bold;
+    /* Đậm */
+    font-size: 4rem;
+    /* Kích thước lớn gấp đôi */
+}
+
+.time-message {
+    margin-top: 10px;
+    /* Khoảng cách giữa fastestUser và time */
+    font-size: 1rem;
+    /* Kích thước chữ bình thường */
+}
+
+.fastest-user-message {
+    color: black;
+    font-size: 1.5rem;
+    /* Điều chỉnh kích thước chữ nếu cần */
+    font-weight: bold;
+    margin-top: 10px;
+    /* Khoảng cách với dòng trước */
+}
+
+.time-message {
+    color: black;
+    margin-top: 10px;
+    /* Khoảng cách giữa fastestUser và time */
+    font-size: 1rem;
+    /* Kích thước chữ bình thường */
 }
