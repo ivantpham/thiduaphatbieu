@@ -138,12 +138,13 @@ function Home() {
     }, []);
 
     const handleUnlock = async () => {
-        setIsUnlocked(true);
+        setIsUnlocked(true);  // Cập nhật ngay lập tức
         setFastestUser(null);
         setTime(null);
         setClickedUsers([]);
         setShowPopup(false);
 
+        // Cập nhật vào Firebase
         try {
             await set(ref(database, 'competition/isUnlocked'), true);
         } catch (error) {
@@ -190,7 +191,6 @@ function Home() {
         });
     };
 
-
     const resetCompetition = async () => {
         console.log("Resetting competition data..."); // Thêm dòng log ở đây
         setIsUnlocked(false);
@@ -209,11 +209,6 @@ function Home() {
             console.error('Error updating database:', error);
         }
     };
-
-
-
-
-
 
     const handleSignOut = async () => {
         try {
@@ -243,7 +238,6 @@ function Home() {
                             Reset Cuộc Thi
                         </button>
                     </div>
-
                 </div>
             )}
 
@@ -268,7 +262,7 @@ function Home() {
                 </div>
             )}
 
-            {!showPopup && user && user.email !== 'admin@btnntp.com' && user.email !== 'kythuat@btnntp.com' && (
+            {!isUnlocked && user && (
                 <div className="user-button-container">
                     <button
                         onClick={() => {
@@ -286,40 +280,18 @@ function Home() {
                 </div>
             )}
 
-
-            {/* Popup thông báo khi có người dùng bấm */}
             {showPopup && (
                 <div className="popup">
-                    <h2>Chúc mừng!</h2>
-                    <div className="fastest-user-container">
-                        <span className="fastest-user">{fastestUser}</span>
-                        <div className="fastest-user-message">là Nhóm bấm nhanh nhất</div>
-                        <div className="time-message">{formatTime(time)}</div>
+                    <div className="popup-content">
+                        <h2>Bạn đã bấm thành công!</h2>
+                        <p>Thời gian của bạn: {formatTime(time)}</p>
+                        <button onClick={() => setShowPopup(false)} className="btn btn-secondary">Đóng</button>
                     </div>
-                    {secondFastestUser && (
-                        <div className="second-fastest-user-container">
-                            <span className="second-fastest-user">{secondFastestUser}</span>
-                            <div className="second-fastest-user-message">là Nhóm nhanh thứ nhì</div>
-                            <div className="time-message">{formatTime(secondFastestTime)}</div>
-                        </div>
-                    )}
-                    {thirdFastestUser && (
-                        <div className="third-fastest-user-container">
-                            <span className="third-fastest-user">{thirdFastestUser}</span>
-                            <div className="third-fastest-user-message">là Nhóm nhanh thứ ba</div>
-                            <div className="time-message">{formatTime(thirdFastestTime)}</div>
-                        </div>
-                    )}
-                    <button onClick={() => setShowPopup(false)} className="btn btn-secondary">
-                        Đóng
-                    </button>
                 </div>
             )}
 
-            {!user && <Login />}
-
             {showChangeNamePopup && (
-                <ChangeName onClose={() => setShowChangeNamePopup(false)} />
+                <ChangeName setShowChangeNamePopup={setShowChangeNamePopup} />
             )}
         </div>
     );
