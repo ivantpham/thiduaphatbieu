@@ -6,7 +6,7 @@ import { useUser } from "../context/UserContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { signOut } from 'firebase/auth';
 import { auth, database } from '../firebase';
-import { ref, set, onValue } from "firebase/database";
+import { ref, set, onValue, remove } from "firebase/database";
 
 function Home() {
     const { user, setUser } = useUser();
@@ -61,7 +61,16 @@ function Home() {
             if (data) {
                 setResetButton(data);
                 if (data === true) {
-                    window.location.reload();
+                    // Xóa dữ liệu trong competition/players khi nút reset được bấm
+                    remove(ref(database, 'competition/players'))
+                        .then(() => {
+                            console.log("Competition players have been successfully removed.");
+                            // Sau khi xóa xong, có thể làm mới trang nếu cần
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            console.error("Error removing competition players: ", error);
+                        });
                 }
             }
         });
@@ -71,6 +80,7 @@ function Home() {
             unsubscribeResetButton();
         };
     }, []);
+
 
     useEffect(() => {
         const fastestUserRef = ref(database, 'competition/fastestUser');
@@ -180,7 +190,9 @@ function Home() {
         });
     };
 
+
     const resetCompetition = async () => {
+        console.log("Resetting competition data..."); // Thêm dòng log ở đây
         setIsUnlocked(false);
         setFastestUser(null);
         setTime(null);
@@ -191,10 +203,17 @@ function Home() {
         try {
             await set(ref(database, 'competition/isUnlocked'), false);
             await set(ref(database, 'competition/resetButton'), true);
+            await remove(ref(database, 'competition/players'));
+            console.log("Competition players have been successfully removed.");
         } catch (error) {
             console.error('Error updating database:', error);
         }
     };
+
+
+
+
+
 
     const handleSignOut = async () => {
         try {
