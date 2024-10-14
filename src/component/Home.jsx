@@ -235,12 +235,15 @@ function Home() {
 
             {user && user.email === 'admin@btnntp.com' && (
                 <div className="moderator-section">
-                    <button onClick={handleUnlock} className="unlock-button btn btn-primary">
-                        {isUnlocked ? "Đã mở khóa!" : "Mở khóa cho người chơi"}
-                    </button>
-                    <button onClick={resetCompetition} className="reset-button btn btn-warning">
-                        Reset Cuộc Thi
-                    </button>
+                    <div className="button-container">
+                        <button onClick={handleUnlock} className="unlock-button btn btn-primary">
+                            {isUnlocked ? "Đã mở khóa!" : "Mở khóa cho người chơi"}
+                        </button>
+                        <button onClick={resetCompetition} className="reset-button btn btn-warning">
+                            Reset Cuộc Thi
+                        </button>
+                    </div>
+
                 </div>
             )}
 
@@ -265,7 +268,7 @@ function Home() {
                 </div>
             )}
 
-            {!showPopup && user && (
+            {!showPopup && user && user.email !== 'admin@btnntp.com' && user.email !== 'kythuat@btnntp.com' && (
                 <div className="user-button-container">
                     <button
                         onClick={() => {
@@ -282,6 +285,7 @@ function Home() {
                     </button>
                 </div>
             )}
+
 
             {/* Popup thông báo khi có người dùng bấm */}
             {showPopup && (

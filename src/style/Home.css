@@ -119,7 +119,6 @@ body {
 }
 /* Định dạng nút Reset */
 .reset-button {
-  margin-top: 20px;
   padding: 10px 20px;
   background-color: #ffcc00;
   border: none;
@@ -285,4 +284,15 @@ body {
   /* Khoảng cách giữa fastestUser và time */
   font-size: 1rem;
   /* Kích thước chữ bình thường */
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  /* Căn giữa theo chiều ngang */
+  align-items: center;
+  /* Căn giữa theo chiều dọc */
+  margin-top: 20px;
+  /* Khoảng cách từ phần tử phía trên */
+  gap: 10px;
+  /* Khoảng cách giữa các nút */
 }
