@@ -287,7 +287,9 @@ function Home() {
 
                 {fastestUser ? (
                     <div>
-                        <p>Người chiến thắng: {fastestUser}</p>
+                        <div className="fastest-user">
+                            {fastestUser}
+                        </div>
                         <p>Thời gian: {formatTime(time)}</p>
                     </div>
                 ) : (
