@@ -1,11 +1,10 @@
-/* Đặt màu nền tổng thể cho toàn bộ ứng dụng */
 body {
     background-color: #282c34;
     color: white;
     margin: 0;
     font-family: Arial, sans-serif;
-    margin-top: 150px;
-    /* Giá trị này phải bằng chiều cao của .header-container */
+    margin-top: 90px;
+    /* Giảm xuống 90px */
 }
 
 /* Định dạng container cho header */
@@ -17,10 +16,15 @@ body {
     top: 0;
     width: 100%;
     height: 150px;
-    /* Chiều cao của header */
     background-color: #282c34;
-    /* Màu nền giống với phần còn lại */
     z-index: 100;
+    margin-top: -70px;
+    /* Dời lên thêm 30px */
+}
+
+.App-header {
+    margin-top: -50px;
+    /* Điều chỉnh lên cao thêm */
 }
 
 /* Định dạng logo và tiêu đề */
