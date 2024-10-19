@@ -26,7 +26,7 @@ function Home() {
 
     const [userName, setUserName] = useState('');
     const [resetButton, setResetButton] = useState(false);
-    const [buttonPosition, setButtonPosition] = useState("center"); // State cho vị trí của nút
+    const [buttonPosition, setButtonPosition] = useState("center");
 
     const formatTime = (timeInMs) => {
         if (timeInMs === null) return "0ms";
@@ -62,11 +62,9 @@ function Home() {
             if (data) {
                 setResetButton(data);
                 if (data === true) {
-                    // Xóa dữ liệu trong competition/players khi nút reset được bấm
                     remove(ref(database, 'competition/players'))
                         .then(() => {
                             console.log("Competition players have been successfully removed.");
-                            // Sau khi xóa xong, có thể làm mới trang nếu cần
                             window.location.reload();
                         })
                         .catch((error) => {
@@ -82,7 +80,6 @@ function Home() {
         };
     }, []);
 
-
     useEffect(() => {
         const fastestUserRef = ref(database, 'competition/fastestUser');
 
@@ -92,9 +89,8 @@ function Home() {
                 setFastestUser(data.fastestUser);
                 setTime(data.time);
 
-                // Kiểm tra nếu người dùng là kythuat@btnntp.com
                 if (user && user.email === 'kythuat@btnntp.com') {
-                    setShowPopup(true); // Hiển thị popup ngay lập tức
+                    setShowPopup(true);
                 }
             }
         });
@@ -150,7 +146,6 @@ function Home() {
         setClickedUsers([]);
         setShowPopup(false);
 
-        // Cập nhật vị trí ngẫu nhiên
         const positions = ["left", "center", "right"];
         const randomPosition = positions[Math.floor(Math.random() * positions.length)];
         setButtonPosition(randomPosition);
@@ -202,7 +197,8 @@ function Home() {
     };
 
     const resetCompetition = async () => {
-        console.log("Resetting competition data..."); // Thêm dòng log ở đây
+        console.log("Resetting competition data...");
+
         setIsUnlocked(false);
         setFastestUser(null);
         setTime(null);
@@ -210,11 +206,18 @@ function Home() {
         setDisqualifiedUsers([]);
         setShowPopup(false);
 
+        const positions = ["left", "center", "right"];
+        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
+        setButtonPosition(randomPosition);
+
         try {
             await set(ref(database, 'competition/isUnlocked'), false);
             await set(ref(database, 'competition/resetButton'), true);
             await remove(ref(database, 'competition/players'));
             console.log("Competition players have been successfully removed.");
+
+            // Update the button position in the database for all users
+            await set(ref(database, 'competition/buttonPosition'), randomPosition);
         } catch (error) {
             console.error('Error updating database:', error);
         }
@@ -263,7 +266,7 @@ function Home() {
                     {showDropdown && (
                         <div className="dropdown-menu show">
                             <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>
-                                Đổi tên người dùng
+                                Đổi tên
                             </button>
                             <button className="dropdown-item" onClick={handleSignOut}>
                                 Đăng xuất
@@ -274,6 +277,7 @@ function Home() {
             )}
 
             {showChangeNamePopup && <ChangeName setShowChangeNamePopup={setShowChangeNamePopup} />}
+
             <div className="button-container">
                 {isUnlocked && (
                     <button
@@ -286,7 +290,15 @@ function Home() {
                 )}
             </div>
 
-            {showPopup && <div className="popup">Chúc mừng! Bạn là người bấm nhanh nhất!</div>}
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>Chúc mừng!</h2>
+                        <p>Người chơi nhanh nhất: {fastestUser}</p>
+                        <p>Thời gian: {formatTime(time)}</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
