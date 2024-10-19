@@ -22,17 +22,17 @@ function Home() {
     const [showPopup, setShowPopup] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showChangeNamePopup, setShowChangeNamePopup] = useState(false);
-    const totalUsers = 1;
-
-    const [userName, setUserName] = useState('');
+    const [buttonPosition, setButtonPosition] = useState("center"); // State for button position
     const [resetButton, setResetButton] = useState(false);
-    const [buttonPosition, setButtonPosition] = useState("center");
+    const totalUsers = 1;
+    const [userName, setUserName] = useState('');
 
     const formatTime = (timeInMs) => {
         if (timeInMs === null) return "0ms";
         const milliseconds = timeInMs % 1000;
         const seconds = Math.floor((timeInMs / 1000) % 60);
         const minutes = Math.floor((timeInMs / (1000 * 60)) % 60);
+
         return `${minutes} phút, ${seconds} giây, ${milliseconds} ms`;
     };
 
@@ -138,30 +138,7 @@ function Home() {
         resetCompetitionValues();
     }, []);
 
-    const resetCompetition = async () => {
-        console.log("Resetting competition data...");
-        setIsUnlocked(false);
-        setFastestUser(null);
-        setTime(null);
-        setClickedUsers([]);
-        setDisqualifiedUsers([]);
-        setShowPopup(false);
-
-        // Cập nhật trạng thái isUnlocked và vị trí ngẫu nhiên của nút cho tất cả người dùng
-        const positions = ["left", "center", "right"];
-        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-
-        try {
-            await set(ref(database, 'competition/isUnlocked'), false);
-            await set(ref(database, 'competition/resetButton'), true);
-            await set(ref(database, 'competition/buttonPosition'), randomPosition); // Cập nhật vị trí ngẫu nhiên của nút
-            await remove(ref(database, 'competition/players'));
-            console.log("Competition players have been successfully removed.");
-        } catch (error) {
-            console.error('Error updating database:', error);
-        }
-    };
-
+    // Handle button unlock and update button position
     const handleUnlock = async () => {
         setIsUnlocked(true);
         setFastestUser(null);
@@ -175,6 +152,7 @@ function Home() {
 
         try {
             await set(ref(database, 'competition/isUnlocked'), true);
+            await set(ref(database, 'competition/buttonPosition'), randomPosition); // Update button position in database
         } catch (error) {
             console.error('Error updating database:', error);
         }
@@ -219,6 +197,29 @@ function Home() {
         });
     };
 
+    const resetCompetition = async () => {
+        console.log("Resetting competition data...");
+        setIsUnlocked(false);
+        setFastestUser(null);
+        setTime(null);
+        setClickedUsers([]);
+        setDisqualifiedUsers([]);
+        setShowPopup(false);
+
+        const positions = ["left", "center", "right"];
+        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
+
+        try {
+            await set(ref(database, 'competition/isUnlocked'), false);
+            await set(ref(database, 'competition/resetButton'), true);
+            await set(ref(database, 'competition/buttonPosition'), randomPosition); // Update button position
+            await remove(ref(database, 'competition/players'));
+            console.log("Competition players have been successfully removed.");
+        } catch (error) {
+            console.error('Error updating database:', error);
+        }
+    };
+
     const handleSignOut = async () => {
         try {
             await signOut(auth);
@@ -229,6 +230,20 @@ function Home() {
             console.error("Error signing out: ", error);
         }
     };
+
+    // Listen for button position change in all users
+    useEffect(() => {
+        const buttonPositionRef = ref(database, 'competition/buttonPosition');
+
+        const unsubscribePosition = onValue(buttonPositionRef, (snapshot) => {
+            const position = snapshot.val();
+            if (position) {
+                setButtonPosition(position); // Update button position from Firebase
+            }
+        });
+
+        return () => unsubscribePosition();
+    }, []);
 
     return (
         <div className="App">
@@ -244,31 +259,9 @@ function Home() {
                             {isUnlocked ? "Đã mở khóa!" : "Mở khóa cho người chơi"}
                         </button>
                         <button onClick={resetCompetition} className="reset-button btn btn-warning">
-                            Reset Cuộc Thi
+                            Reset
                         </button>
                     </div>
-                </div>
-            )}
-
-            {user && (
-                <div className="user-greeting position-absolute top-0 end-0 p-3">
-                    <button
-                        className="btn btn-light dropdown-toggle"
-                        onClick={() => setShowDropdown(!showDropdown)}
-                    >
-                        Chào, {userName}
-                    </button>
-
-                    {showDropdown && (
-                        <div className="dropdown-menu">
-                            <button onClick={() => setShowChangeNamePopup(true)} className="dropdown-item">
-                                Thay đổi tên
-                            </button>
-                            <button onClick={handleSignOut} className="dropdown-item">
-                                Đăng xuất
-                            </button>
-                        </div>
-                    )}
                 </div>
             )}
 
@@ -285,6 +278,8 @@ function Home() {
                     </button>
                 )}
             </div>
+
+            {showPopup && <div className="popup">Bạn đã thắng!</div>}
         </div>
     );
 }
