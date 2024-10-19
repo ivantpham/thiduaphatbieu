@@ -326,6 +326,7 @@ body {
     /* Kích thước chữ bình thường */
 }
 
+/* Định dạng container cho nút người chơi */
 .button-container {
     display: flex;
     justify-content: center;
@@ -336,4 +337,28 @@ body {
     /* Khoảng cách từ phần tử phía trên */
     gap: 10px;
     /* Khoảng cách giữa các nút */
+    position: relative;
+    height: 100px;
+    /* Tùy chỉnh chiều cao của container */
+}
+
+/* Định dạng nút "Bấm Nhanh" với các vị trí ngẫu nhiên */
+.click-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: left 0.5s, right 0.5s;
+}
+
+.left {
+    left: 0;
+}
+
+.center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.right {
+    right: 0;
 }

@@ -26,6 +26,7 @@ function Home() {
 
     const [userName, setUserName] = useState('');
     const [resetButton, setResetButton] = useState(false);
+    const [buttonPosition, setButtonPosition] = useState("center"); // State cho vị trí của nút
 
     const formatTime = (timeInMs) => {
         if (timeInMs === null) return "0ms";
@@ -149,6 +150,11 @@ function Home() {
         setClickedUsers([]);
         setShowPopup(false);
 
+        // Cập nhật vị trí ngẫu nhiên
+        const positions = ["left", "center", "right"];
+        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
+        setButtonPosition(randomPosition);
+
         try {
             await set(ref(database, 'competition/isUnlocked'), true);
         } catch (error) {
@@ -194,7 +200,6 @@ function Home() {
             return updatedUsers;
         });
     };
-
 
     const resetCompetition = async () => {
         console.log("Resetting competition data..."); // Thêm dòng log ở đây
@@ -243,36 +248,37 @@ function Home() {
                             Reset Cuộc Thi
                         </button>
                     </div>
-
                 </div>
             )}
 
             {user && (
                 <div className="user-greeting position-absolute top-0 end-0 p-3">
                     <button
-                        className="btn btn-link dropdown-toggle"
+                        className="btn btn-light dropdown-toggle"
                         onClick={() => setShowDropdown(!showDropdown)}
                     >
-                        Xin chào, {userName}
+                        Chào, {userName}
                     </button>
+
                     {showDropdown && (
-                        <div className="dropdown-menu show" style={{ position: 'absolute', right: '0', zIndex: '1000' }}>
-                            <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>Đổi Tên</button>
-                            <button className="dropdown-item" onClick={handleSignOut}>Đăng Xuất</button>
+                        <div className="dropdown-menu show">
+                            <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>
+                                Đổi tên người dùng
+                            </button>
+                            <button className="dropdown-item" onClick={handleSignOut}>
+                                Đăng xuất
+                            </button>
                         </div>
                     )}
                 </div>
             )}
 
-            {!user && <Login />}
-
-            {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
-
+            {showChangeNamePopup && <ChangeName setShowChangeNamePopup={setShowChangeNamePopup} />}
             <div className="button-container">
                 {isUnlocked && (
                     <button
                         onClick={handleUserClick}
-                        className="click-button btn btn-success"
+                        className={`click-button btn btn-success ${buttonPosition}`}
                         disabled={!!fastestUser || clickedUsers.includes(userName)}
                     >
                         Bấm Nhanh
@@ -280,34 +286,7 @@ function Home() {
                 )}
             </div>
 
-            {/* Popup thông báo khi có người dùng bấm */}
-            {showPopup && (
-                <div className="popup">
-                    <h2>Chúc mừng!</h2>
-                    <div className="fastest-user-container">
-                        <span className="fastest-user">{fastestUser}</span>
-                        <div className="fastest-user-message">là Nhóm bấm nhanh nhất</div>
-                        <div className="time-message">{formatTime(time)}</div>
-                    </div>
-                    {secondFastestUser && (
-                        <div className="second-fastest-user-container">
-                            <span className="second-fastest-user">{secondFastestUser}</span>
-                            <div className="second-fastest-user-message">là Nhóm nhanh thứ nhì</div>
-                            <div className="time-message">{formatTime(secondFastestTime)}</div>
-                        </div>
-                    )}
-                    {thirdFastestUser && (
-                        <div className="third-fastest-user-container">
-                            <span className="third-fastest-user">{thirdFastestUser}</span>
-                            <div className="third-fastest-user-message">là Nhóm nhanh thứ ba</div>
-                            <div className="time-message">{formatTime(thirdFastestTime)}</div>
-                        </div>
-                    )}
-                    <button onClick={() => setShowPopup(false)} className="btn btn-secondary">
-                        Đóng
-                    </button>
-                </div>
-            )}
+            {showPopup && <div className="popup">Chúc mừng! Bạn là người bấm nhanh nhất!</div>}
         </div>
     );
 }
