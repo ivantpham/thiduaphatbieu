@@ -275,13 +275,15 @@ function Home() {
             {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
 
             <div className={`content ${isUnlocked ? 'unlocked' : ''}`}>
-                {user && user.email === 'admin@btnntp.com' && !isUnlocked && (
-                    <button className="btn btn-primary" onClick={handleUnlock}>Mở khóa</button>
+                {user && user.email === 'admin@btnntp.com' && (
+                    <>
+                        {!isUnlocked ? (
+                            <button className="btn btn-primary" onClick={handleUnlock}>Mở khóa</button>
+                        ) : (
+                            <button className="btn btn-danger" onClick={resetCompetition}>Reset</button>
+                        )}
+                    </>
                 )}
-
-                {isUnlocked ? (
-                    <button className="btn btn-danger" onClick={resetCompetition}>Reset</button>
-                ) : null}
 
                 {fastestUser ? (
                     <div>
@@ -297,6 +299,7 @@ function Home() {
                     </button>
                 </div>
             </div>
+
         </div>
     );
 }
