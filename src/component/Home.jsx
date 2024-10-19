@@ -247,7 +247,8 @@ function Home() {
         <div className="App">
             <div className="header">
                 <img src={`${process.env.PUBLIC_URL}/logo1.png`} alt="Logo" className="logo mb-4" />
-                <h1>Thi Đua Phát Biểu</h1>
+                <h1 className="custom-title">Thi Đua Phát Biểu</h1>
+
             </div>
 
             {user && (
