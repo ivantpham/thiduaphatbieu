@@ -33,7 +33,6 @@ function Home() {
         const milliseconds = timeInMs % 1000;
         const seconds = Math.floor((timeInMs / 1000) % 60);
         const minutes = Math.floor((timeInMs / (1000 * 60)) % 60);
-
         return `${minutes} phút, ${seconds} giây, ${milliseconds} ms`;
     };
 
@@ -139,6 +138,30 @@ function Home() {
         resetCompetitionValues();
     }, []);
 
+    const resetCompetition = async () => {
+        console.log("Resetting competition data...");
+        setIsUnlocked(false);
+        setFastestUser(null);
+        setTime(null);
+        setClickedUsers([]);
+        setDisqualifiedUsers([]);
+        setShowPopup(false);
+
+        // Cập nhật trạng thái isUnlocked và vị trí ngẫu nhiên của nút cho tất cả người dùng
+        const positions = ["left", "center", "right"];
+        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
+
+        try {
+            await set(ref(database, 'competition/isUnlocked'), false);
+            await set(ref(database, 'competition/resetButton'), true);
+            await set(ref(database, 'competition/buttonPosition'), randomPosition); // Cập nhật vị trí ngẫu nhiên của nút
+            await remove(ref(database, 'competition/players'));
+            console.log("Competition players have been successfully removed.");
+        } catch (error) {
+            console.error('Error updating database:', error);
+        }
+    };
+
     const handleUnlock = async () => {
         setIsUnlocked(true);
         setFastestUser(null);
@@ -196,33 +219,6 @@ function Home() {
         });
     };
 
-    const resetCompetition = async () => {
-        console.log("Resetting competition data...");
-
-        setIsUnlocked(false);
-        setFastestUser(null);
-        setTime(null);
-        setClickedUsers([]);
-        setDisqualifiedUsers([]);
-        setShowPopup(false);
-
-        const positions = ["left", "center", "right"];
-        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-        setButtonPosition(randomPosition);
-
-        try {
-            await set(ref(database, 'competition/isUnlocked'), false);
-            await set(ref(database, 'competition/resetButton'), true);
-            await remove(ref(database, 'competition/players'));
-            console.log("Competition players have been successfully removed.");
-
-            // Update the button position in the database for all users
-            await set(ref(database, 'competition/buttonPosition'), randomPosition);
-        } catch (error) {
-            console.error('Error updating database:', error);
-        }
-    };
-
     const handleSignOut = async () => {
         try {
             await signOut(auth);
@@ -264,11 +260,11 @@ function Home() {
                     </button>
 
                     {showDropdown && (
-                        <div className="dropdown-menu show">
-                            <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>
-                                Đổi tên
+                        <div className="dropdown-menu">
+                            <button onClick={() => setShowChangeNamePopup(true)} className="dropdown-item">
+                                Thay đổi tên
                             </button>
-                            <button className="dropdown-item" onClick={handleSignOut}>
+                            <button onClick={handleSignOut} className="dropdown-item">
                                 Đăng xuất
                             </button>
                         </div>
@@ -289,16 +285,6 @@ function Home() {
                     </button>
                 )}
             </div>
-
-            {showPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h2>Chúc mừng!</h2>
-                        <p>Người chơi nhanh nhất: {fastestUser}</p>
-                        <p>Thời gian: {formatTime(time)}</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
