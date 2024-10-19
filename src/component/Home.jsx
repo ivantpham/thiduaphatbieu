@@ -145,16 +145,29 @@ function Home() {
         setClickedUsers([]);
         setShowPopup(false);
 
-        const positions = ["left", "center", "right"];
-        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-        setButtonPosition(randomPosition);
+        const positions = ["left", "center", "right", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right", "left", "center", "right", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"];
+        let currentIndex = 0;
 
-        try {
-            await set(ref(database, 'competition/isUnlocked'), true);
-            await set(ref(database, 'competition/buttonPosition'), randomPosition);
-        } catch (error) {
-            console.error('Error updating database:', error);
-        }
+        // Hiển thị từng vị trí theo thứ tự: left -> center -> right
+        const showPositionsInOrder = async () => {
+            for (let i = 0; i < positions.length; i++) {
+                setButtonPosition(positions[i]);
+                await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 1 giây giữa các lần thay đổi vị trí
+            }
+
+            // Sau khi hiển thị xong, chọn ngẫu nhiên 1 vị trí
+            const randomPosition = positions[Math.floor(Math.random() * positions.length)];
+            setButtonPosition(randomPosition);
+
+            try {
+                await set(ref(database, 'competition/isUnlocked'), true);
+                await set(ref(database, 'competition/buttonPosition'), randomPosition);
+            } catch (error) {
+                console.error('Error updating database:', error);
+            }
+        };
+
+        showPositionsInOrder();
     };
 
     const handleUserClick = async () => {
