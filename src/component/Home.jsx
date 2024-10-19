@@ -138,7 +138,6 @@ function Home() {
         resetCompetitionValues();
     }, []);
 
-    // Handle button unlock and update button position
     const handleUnlock = async () => {
         setIsUnlocked(true);
         setFastestUser(null);
@@ -152,7 +151,7 @@ function Home() {
 
         try {
             await set(ref(database, 'competition/isUnlocked'), true);
-            await set(ref(database, 'competition/buttonPosition'), randomPosition); // Update button position in database
+            await set(ref(database, 'competition/buttonPosition'), randomPosition);
         } catch (error) {
             console.error('Error updating database:', error);
         }
@@ -231,7 +230,6 @@ function Home() {
         }
     };
 
-    // Listen for button position change in all users
     useEffect(() => {
         const buttonPositionRef = ref(database, 'competition/buttonPosition');
 
@@ -252,34 +250,51 @@ function Home() {
                 <h1>Thi Đua Phát Biểu</h1>
             </div>
 
-            {user && user.email === 'admin@btnntp.com' && (
-                <div className="moderator-section">
-                    <div className="button-container">
-                        <button onClick={handleUnlock} className="unlock-button btn btn-primary">
-                            {isUnlocked ? "Đã mở khóa!" : "Mở khóa cho người chơi"}
-                        </button>
-                        <button onClick={resetCompetition} className="reset-button btn btn-warning">
-                            Reset
-                        </button>
-                    </div>
+            {user && (
+                <div className="user-greeting position-absolute top-0 end-0 p-3">
+                    <button
+                        className="btn btn-light dropdown-toggle"
+                        onClick={() => setShowDropdown(!showDropdown)}
+                    >
+                        Chào, {userName}
+                    </button>
+
+                    {showDropdown && (
+                        <div className="dropdown-menu show">
+                            <button className="dropdown-item" onClick={() => setShowChangeNamePopup(true)}>
+                                Đổi tên
+                            </button>
+                            <button className="dropdown-item" onClick={handleSignOut}>
+                                Đăng xuất
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 
-            {showChangeNamePopup && <ChangeName setShowChangeNamePopup={setShowChangeNamePopup} />}
+            {showChangeNamePopup && <ChangeName onClose={() => setShowChangeNamePopup(false)} />}
 
-            <div className="button-container">
-                {isUnlocked && (
-                    <button
-                        onClick={handleUserClick}
-                        className={`click-button btn btn-success ${buttonPosition}`}
-                        disabled={!!fastestUser || clickedUsers.includes(userName)}
-                    >
-                        Bấm Nhanh
-                    </button>
+            <div className={`content ${isUnlocked ? 'unlocked' : ''}`}>
+                {!isUnlocked ? (
+                    <button className="btn btn-primary" onClick={handleUnlock}>Mở khóa</button>
+                ) : (
+                    <button className="btn btn-danger" onClick={resetCompetition}>Reset</button>
                 )}
-            </div>
 
-            {showPopup && <div className="popup">Bạn đã thắng!</div>}
+                {fastestUser ? (
+                    <div>
+                        <p>Người chiến thắng: {fastestUser}</p>
+                        <p>Thời gian: {formatTime(time)}</p>
+                    </div>
+                ) : (
+                    <p>Chưa có người chiến thắng</p>
+                )}
+                <div className={`button-container position-absolute ${buttonPosition}`}>
+                    <button className="btn btn-success" onClick={handleUserClick}>
+                        Bấm vào đây!
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
