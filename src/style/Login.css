@@ -8,12 +8,12 @@
   background-color: #343a40;
   /* Màu nền tối */
 }
-/* Nút đăng nhập */
-.login-button {
-  padding: 10px 20px;
-}
 /* Popup đăng nhập */
 .login-popup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -24,37 +24,25 @@
   /* Đổ bóng */
   border-radius: 8px;
   /* Viền bo tròn */
-  width: 320px;
+  width: 400px;
   /* Chiều rộng popup */
+  padding: 20px;
   z-index: 1000;
   /* Đảm bảo popup nằm trên cùng */
-  width: 500px;
-  /* Thay đổi chiều rộng ở đây */
-  height: 670px;
-  /* Thêm chiều cao nếu cần */
+  overflow: hidden;
+  /* Ngăn các phần tử con tràn ra ngoài */
+  max-height: 90vh;
+  /* Giới hạn chiều cao của popup */
 }
 /* Nội dung popup */
 .login-popup-content {
-  position: relative;
-  /* Để đặt nút đóng */
-}
-/* Nút đóng popup */
-.close-popup-button {
-  position: absolute;
-  top: 10px;
-  /* Cách từ đỉnh */
-  right: 10px;
-  /* Cách từ bên phải */
-  background: none;
-  /* Không nền */
-  border: none;
-  /* Không viền */
-  font-size: 20px;
-  /* Kích thước chữ */
-  cursor: pointer;
-  /* Con trỏ chuột dạng tay */
-  color: white;
-  /* Màu chữ */
+  width: 100%;
+  padding: 16px;
+  /* Padding thêm vào nội dung */
+  box-sizing: border-box;
+  /* Đảm bảo padding được tính vào chiều rộng */
+  overflow: auto;
+  /* Cho phép cuộn nếu nội dung quá dài */
 }
 /* Tiêu đề popup */
 .login-header {
@@ -66,6 +54,7 @@
   /* Chữ đậm */
   color: #ffffff;
   /* Màu chữ */
+  text-align: center;
 }
 /* Đoạn văn hướng dẫn */
 .login-subtext {
@@ -73,11 +62,44 @@
   /* Khoảng cách dưới đoạn văn */
   color: #cccccc;
   /* Màu chữ */
+  text-align: center;
 }
 /* Nhóm trường nhập liệu */
 .login-form-group {
   margin-bottom: 15px;
   /* Khoảng cách giữa các trường */
+  width: 100%;
+}
+/* Trường nhập liệu */
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  text-align: center;
+  /* Căn giữa nội dung */
+  color: black;
+  /* Màu chữ đen */
+}
+/* Nút đăng nhập */
+.login-submit-button {
+  padding: 10px;
+  width: 100%;
+  /* Đảm bảo nút rộng bằng container */
+  margin-top: 10px;
+  /* Tạo khoảng cách giữa các nút */
+}
+/* Nút đóng popup */
+.close-button {
+  padding: 10px;
+  width: 100%;
+  /* Đảm bảo nút rộng bằng container */
+  margin-top: 10px;
+}
+/* Thông báo lỗi */
+.text-danger {
+  color: red;
+  /* Màu chữ cho thông báo lỗi */
 }
 /* Thông báo nếu chưa có tài khoản */
 .contact-info {
@@ -87,15 +109,31 @@
   /* Màu chữ */
   font-size: 14px;
   /* Kích thước chữ */
+  text-align: center;
 }
-.login-container {
-  display: flex;
-  justify-content: center;
-  /* Căn giữa theo chiều ngang */
-  align-items: flex-start;
-  /* Căn phần tử con sát phía trên */
-  height: 100vh;
-  background-color: #282c34;
-  padding-top: 20px;
-  /* Thêm khoảng cách nếu cần giữa đầu trang và nút */
+/* Thay đổi tên class cho trường email */
+.login-input-email {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  /* Đảm bảo có viền cho input */
+  border-radius: 4px;
+  /* Bo góc nhẹ */
+  color: #000;
+  /* Màu chữ */
+}
+/* Thay đổi tên class cho trường mật khẩu */
+.login-input-password {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  /* Đảm bảo có viền cho input */
+  border-radius: 4px;
+  /* Bo góc nhẹ */
+  color: #000;
+  /* Màu chữ */
 }

@@ -26,6 +26,7 @@ function Home() {
     const [resetButton, setResetButton] = useState(false);
     const totalUsers = 1;
     const [userName, setUserName] = useState('');
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
 
     const formatTime = (timeInMs) => {
         if (timeInMs === null) return "0ms";
@@ -235,8 +236,9 @@ function Home() {
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            setUser(null);
+            setUser(null);  // Đảm bảo cập nhật lại user là null sau khi đăng xuất
             setShowDropdown(false);
+            setShowPopup(false);  // Đóng popup sau khi đăng xuất
             localStorage.removeItem('userName');
         } catch (error) {
             console.error("Error signing out: ", error);
@@ -264,7 +266,20 @@ function Home() {
 
             </div>
 
-            {user && (
+            {!user || !user.email ? (
+                <div className="position-absolute top-0 end-0 p-3">
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => setShowLoginPopup(true)} // Mở popup khi nhấn vào
+                    >
+                        Đăng Nhập
+                    </button>
+
+                    {showLoginPopup && (
+                        <Login setShowLoginPopup={setShowLoginPopup} /> // Hiển thị LoginPopup khi showLoginPopup là true
+                    )}
+                </div>
+            ) : (
                 <div className="user-greeting position-absolute top-0 end-0 p-3">
                     <button
                         className="btn btn-light dropdown-toggle"
