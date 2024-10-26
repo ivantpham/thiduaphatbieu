@@ -143,7 +143,7 @@ function Home() {
 
     const handleUnlock = async () => {
         setIsUnlocked(true);
-        await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật Firebase ngay lập tức
+        await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật vào Firebase ngay lập tức
 
         setFastestUser(null);
         setTime(null);
@@ -160,7 +160,7 @@ function Home() {
             "bottom-left", "bottom-center", "bottom-right"
         ];
 
-        // Di chuyển qua các vị trí
+        // Hiển thị từng vị trí và truyền vào Firebase
         for (let i = 0; i < positions.length; i++) {
             setButtonPosition(positions[i]);
             await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
@@ -168,13 +168,10 @@ function Home() {
             await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 50ms giữa các lần thay đổi vị trí
         }
 
-        // Hiện nút chỉ khi nó đã di chuyển qua tất cả vị trí
+        // Sau khi dịch chuyển xong, hiện nút
         setShowButton(true);
-        // Nếu bạn muốn nút ở vị trí ngẫu nhiên cuối cùng
-        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-        setButtonPosition(randomPosition);
-        await set(ref(database, 'competition/buttonPosition'), randomPosition); // Lưu vị trí ngẫu nhiên
     };
+
 
 
 
