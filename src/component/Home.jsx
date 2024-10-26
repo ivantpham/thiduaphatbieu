@@ -159,6 +159,19 @@ function Home() {
         resetCompetitionValues();
     }, []);
 
+    useEffect(() => {
+        const showButtonRef = ref(database, 'competition/showButton');
+
+        const unsubscribeShowButton = onValue(showButtonRef, (snapshot) => {
+            const value = snapshot.val();
+            if (value !== null) {
+                setShowButton(value); // Cập nhật trạng thái showButton từ Firebase
+            }
+        });
+
+        return () => unsubscribeShowButton();
+    }, []);
+
     const handleUnlock = async () => {
         setIsUnlocked(true);
         await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật vào Firebase ngay lập tức
@@ -204,6 +217,7 @@ function Home() {
         await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase
         setShowButton(true); // Hiện nút cho người dùng
     };
+
 
 
 
