@@ -143,7 +143,7 @@ function Home() {
 
     const handleUnlock = async () => {
         setIsUnlocked(true);
-        await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật vào Firebase ngay lập tức
+        await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật trạng thái vào Firebase ngay lập tức
 
         setFastestUser(null);
         setTime(null);
@@ -160,6 +160,7 @@ function Home() {
             "bottom-left", "bottom-center", "bottom-right"
         ];
 
+        // Hiện nút khi đã ở vị trí cuối cùng
         for (let i = 0; i < positions.length; i++) {
             setButtonPosition(positions[i]);
             await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
@@ -167,12 +168,13 @@ function Home() {
             await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 50ms giữa các lần thay đổi vị trí
         }
 
-        // Hiện nút khi đã ở vị trí cuối cùng
-        setShowButton(true);
-        const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-        setButtonPosition(randomPosition);
-        await set(ref(database, 'competition/buttonPosition'), randomPosition); // Lưu vị trí ngẫu nhiên
+        // Lưu vị trí cuối cùng vào Firebase và hiện nút
+        const lastPosition = positions[positions.length - 1];
+        await set(ref(database, 'competition/buttonPosition'), lastPosition); // Lưu vị trí cuối cùng
+        setButtonPosition(lastPosition); // Cập nhật vị trí nút
+        setShowButton(true); // Hiển thị nút "Bấm vào đây!"
     };
+
 
 
 
@@ -336,6 +338,7 @@ function Home() {
                         </button>
                     )}
                 </div>
+
             </div>
 
         </div>
