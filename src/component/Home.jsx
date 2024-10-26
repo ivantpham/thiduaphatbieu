@@ -175,6 +175,11 @@ function Home() {
             "bottom-left", "bottom-center", "bottom-right",
             "left", "center", "right",
             "top-left", "top-center", "top-right",
+            "bottom-left", "bottom-center", "bottom-right", "left", "center", "right",
+            "top-left", "top-center", "top-right",
+            "bottom-left", "bottom-center", "bottom-right",
+            "left", "center", "right",
+            "top-left", "top-center", "top-right",
             "bottom-left", "bottom-center", "bottom-right"
         ];
 
@@ -183,7 +188,7 @@ function Home() {
             setButtonPosition(positions[i]);
             await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
 
-            await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 50ms giữa các lần thay đổi vị trí
+            await new Promise(resolve => setTimeout(resolve, 25)); // Chờ 50ms giữa các lần thay đổi vị trí
         }
 
         // Sau khi dịch chuyển xong, cập nhật vào Firebase để hiện nút
