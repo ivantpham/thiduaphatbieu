@@ -352,3 +352,14 @@ body {
   height: 30px;
   font-size: small;
 }
+.position-absolute-login .btn {
+  width: 100px;
+  height: 30px;
+  font-size: small;
+}
+.user-greeting .dropdown-toggle {
+  width: 170px;
+  height: 30px;
+  font-size: normal;
+  font-weight: 600;
+}

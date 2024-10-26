@@ -175,22 +175,37 @@ function Home() {
             "bottom-left", "bottom-center", "bottom-right"
         ];
 
-        // Tạo mảng 27 phần tử
-        const positions = Array(3).fill(basePositions).flat();
+        // Hàm xáo trộn mảng
+        const shuffleArray = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Hoán đổi phần tử
+            }
+            return array;
+        };
 
+        // Xáo trộn basePositions
+        const shuffledBasePositions = shuffleArray([...basePositions]);
+
+        // Tạo mảng 27 phần tử từ mảng đã xáo trộn
+        const positions = Array(1).fill(shuffledBasePositions).flat();
 
         // Hiển thị từng vị trí và truyền vào Firebase
         for (let i = 0; i < positions.length; i++) {
-            setButtonPosition(positions[i]);
-            await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
+            const position = positions[i];
 
-            await new Promise(resolve => setTimeout(resolve, 200)); // Chờ 50ms giữa các lần thay đổi vị trí
+            setButtonPosition(position);
+            await set(ref(database, 'competition/buttonPosition'), position); // Lưu vào Firebase mỗi lần
+
+            await new Promise(resolve => setTimeout(resolve, 200)); // Chờ 200ms giữa các lần thay đổi vị trí
         }
 
         // Sau khi dịch chuyển xong, cập nhật vào Firebase để hiện nút
         await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase
         setShowButton(true); // Hiện nút cho người dùng
     };
+
+
 
 
 
@@ -293,7 +308,7 @@ function Home() {
             </div>
 
             {!user || !user.email ? (
-                <div className="position-absolute top-0 end-0 p-3">
+                <div className="position-absolute-login top-0 end-0 p-3">
                     <button
                         className="btn btn-primary"
                         onClick={() => setShowLoginPopup(true)} // Mở popup khi nhấn vào
