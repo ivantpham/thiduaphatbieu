@@ -173,14 +173,18 @@ function Home() {
     }, []);
 
     const handleUnlock = async () => {
-        setIsUnlocked(true);
+        setIsUnlocked(true); // Đặt trạng thái là đã mở khóa
         await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật vào Firebase ngay lập tức
 
+        // Reset trạng thái liên quan đến cuộc thi
         setFastestUser(null);
         setTime(null);
         setClickedUsers([]);
         setShowPopup(false);
-        setShowButton(false); // Ẩn nút ngay từ đầu
+
+        // Ẩn nút "Bấm" ngay khi mở khóa
+        await set(ref(database, 'competition/showButton'), false); // Ẩn nút ngay từ đầu
+        setShowButton(false); // Cập nhật trạng thái button trên client
 
         const basePositions = [
             "left", "center", "right",
@@ -207,14 +211,14 @@ function Home() {
         for (let i = 0; i < positions.length; i++) {
             const position = positions[i];
 
-            setButtonPosition(position);
+            setButtonPosition(position); // Cập nhật vị trí button
             await set(ref(database, 'competition/buttonPosition'), position); // Lưu vào Firebase mỗi lần
 
             await new Promise(resolve => setTimeout(resolve, 200)); // Chờ 200ms giữa các lần thay đổi vị trí
         }
 
         // Sau khi dịch chuyển xong, cập nhật vào Firebase để hiện nút
-        await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase
+        await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase để hiển thị lại nút
         setShowButton(true); // Hiện nút cho người dùng
     };
 
@@ -226,44 +230,30 @@ function Home() {
 
 
 
+
     const handleUserClick = async () => {
-        const currentUserName = userName;
-        if (disqualifiedUsers.includes(currentUserName)) {
-            alert(`${currentUserName} đã bị loại và không thể tham gia.`);
-            return;
+        // Kiểm tra xem button có được hiển thị không
+        if (!showButton) return; // Nếu nút không hiển thị, không làm gì cả
+
+        // Đặt người dùng đã nhấn và thời gian hiện tại
+        const currentUser = user.email; // Giả sử bạn đang sử dụng email làm ID người dùng
+        const currentTime = new Date().toISOString(); // Lấy thời gian hiện tại dưới dạng chuỗi ISO
+
+        // Thêm người dùng vào danh sách đã nhấn
+        if (!clickedUsers.includes(currentUser)) {
+            setClickedUsers(prev => [...prev, currentUser]); // Cập nhật danh sách người dùng đã nhấn
+            await set(ref(database, 'competition/clickedUsers'), [...clickedUsers, currentUser]); // Lưu vào Firebase
         }
 
-        if (!isUnlocked) {
-            alert(`${currentUserName} đã bấm trước khi mở khóa và bị loại!`);
-            setDisqualifiedUsers((prevDisqualified) => [...prevDisqualified, currentUserName]);
-        } else if (isUnlocked && !fastestUser) {
-            const currentTime = new Date().getTime();
-            setFastestUser(currentUserName);
-            setTime(currentTime);
-
-            try {
-                const userClickData = {
-                    userName: currentUserName,
-                    time: currentTime,
-                };
-
-                const newClickRef = ref(database, 'competition/players/' + currentUserName);
-                await set(newClickRef, userClickData);
-
-                setShowPopup(true);
-            } catch (error) {
-                console.error('Error updating database:', error);
-            }
+        // Cập nhật trạng thái fastestUser nếu đây là nhấn đầu tiên
+        if (!fastestUser) {
+            setFastestUser(currentUser); // Đặt fastestUser là người nhấn đầu tiên
+            await set(ref(database, 'competition/fastestUser'), currentUser); // Cập nhật vào Firebase
+            setTime(currentTime); // Lưu thời gian hiện tại
+            await set(ref(database, 'competition/time'), currentTime); // Cập nhật thời gian vào Firebase
         }
-
-        setClickedUsers((prevUsers) => {
-            const updatedUsers = [...prevUsers, currentUserName];
-            if (updatedUsers.length === totalUsers) {
-                setShowPopup(true);
-            }
-            return updatedUsers;
-        });
     };
+
 
     const resetCompetition = async () => {
         console.log("Resetting competition data...");
