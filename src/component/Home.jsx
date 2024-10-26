@@ -169,19 +169,15 @@ function Home() {
         setShowPopup(false);
         setShowButton(false); // Ẩn nút ngay từ đầu
 
-        const positions = [
-            "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right",
-            "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right", "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right",
+        const basePositions = [
             "left", "center", "right",
             "top-left", "top-center", "top-right",
             "bottom-left", "bottom-center", "bottom-right"
         ];
+
+        // Tạo mảng 27 phần tử
+        const positions = Array(3).fill(basePositions).flat();
+
 
         // Hiển thị từng vị trí và truyền vào Firebase
         for (let i = 0; i < positions.length; i++) {
