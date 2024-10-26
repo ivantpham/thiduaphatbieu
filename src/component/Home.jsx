@@ -27,6 +27,8 @@ function Home() {
     const totalUsers = 1;
     const [userName, setUserName] = useState('');
     const [showLoginPopup, setShowLoginPopup] = useState(false);
+    const [showButton, setShowButton] = useState(false);
+
 
     const formatTime = (timeInMs) => {
         if (timeInMs === null) return "0ms";
@@ -140,7 +142,6 @@ function Home() {
     }, []);
 
     const handleUnlock = async () => {
-        // Đặt trạng thái isUnlocked là true ngay lập tức
         setIsUnlocked(true);
         await set(ref(database, 'competition/isUnlocked'), true); // Cập nhật vào Firebase ngay lập tức
 
@@ -148,6 +149,7 @@ function Home() {
         setTime(null);
         setClickedUsers([]);
         setShowPopup(false);
+        setShowButton(false); // Ẩn nút ngay từ đầu
 
         const positions = [
             "left", "center", "right",
@@ -158,7 +160,6 @@ function Home() {
             "bottom-left", "bottom-center", "bottom-right"
         ];
 
-        // Hiển thị từng vị trí theo thứ tự
         for (let i = 0; i < positions.length; i++) {
             setButtonPosition(positions[i]);
             await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
@@ -166,11 +167,13 @@ function Home() {
             await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 50ms giữa các lần thay đổi vị trí
         }
 
-        // Sau khi hiển thị xong, chọn ngẫu nhiên 1 vị trí
+        // Hiện nút khi đã ở vị trí cuối cùng
+        setShowButton(true);
         const randomPosition = positions[Math.floor(Math.random() * positions.length)];
         setButtonPosition(randomPosition);
         await set(ref(database, 'competition/buttonPosition'), randomPosition); // Lưu vị trí ngẫu nhiên
     };
+
 
 
     const handleUserClick = async () => {
@@ -327,9 +330,11 @@ function Home() {
                     <p>Chưa có người chiến thắng</p>
                 )}
                 <div className={`button-container position-absolute ${buttonPosition}`}>
-                    <button className="btn btn-success" onClick={handleUserClick}>
-                        Bấm vào đây!
-                    </button>
+                    {showButton && (
+                        <button className="btn btn-success" onClick={handleUserClick}>
+                            Bấm vào đây!
+                        </button>
+                    )}
                 </div>
             </div>
 
