@@ -82,6 +82,24 @@ function Home() {
         };
     }, []);
 
+
+    useEffect(() => {
+        const showButtonRef = ref(database, 'competition/showButton');
+
+        const unsubscribeShowButton = onValue(showButtonRef, (snapshot) => {
+            const value = snapshot.val();
+            if (value !== null) {
+                setShowButton(value); // Cập nhật trạng thái showButton từ Firebase
+            }
+        });
+
+        return () => unsubscribeShowButton();
+    }, []);
+
+
+
+
+
     useEffect(() => {
         const fastestUserRef = ref(database, 'competition/fastestUser');
 
@@ -168,8 +186,9 @@ function Home() {
             await new Promise(resolve => setTimeout(resolve, 50)); // Chờ 50ms giữa các lần thay đổi vị trí
         }
 
-        // Sau khi dịch chuyển xong, hiện nút
-        setShowButton(true);
+        // Sau khi dịch chuyển xong, cập nhật vào Firebase để hiện nút
+        await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase
+        setShowButton(true); // Hiện nút cho người dùng
     };
 
 
