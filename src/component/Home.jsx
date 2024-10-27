@@ -170,39 +170,39 @@ function Home() {
         setShowButton(false); // Ẩn nút ngay từ đầu
 
         const positions = [
-            "left", "right", "left", "center"   // index 3: "center"
+            "left", "right", "left", "center", "right"   // index 3: "center"
         ];
 
         const positions1 = [
-            "right", "left", "right", "left" // index 3: "center"
+            "right", "left", "right", "left", "center" // index 3: "center"
         ];
 
         const positions2 = [
-            "center", "left", "right", "center" // index 3: "center"
+            "center", "left", "right", "center", "right" // index 3: "center"
         ];
 
         const positions3 = [
-            "left", "right", "center", "left"    // index 3: "left"
+            "left", "right", "center", "right", "left"   // index 3: "left"
         ];
 
         const positions4 = [
-            "right", "left", "center", "right"  // index 3: "right"
+            "right", "left", "center", "right", "left"  // index 3: "right"
         ];
 
         const positions5 = [
-            "left", "center", "right", "left"   // index 3: "left"
+            "left", "center", "right", "left", "center"   // index 3: "left"
         ];
 
         const positions6 = [
-            "right", "left", "center", "right"    // index 3: "right"
+            "right", "left", "center", "right", "center"   // index 3: "right"
         ];
 
         const positions7 = [
-            "left", "right", "center", "left"  // index 3: "left"
+            "left", "right", "center", "left", "right"  // index 3: "left"
         ];
 
         const positions8 = [
-            "right", "center", "left", "center"  // index 3: "right"
+            "right", "center", "left", "center", "left"  // index 3: "right"
         ];
 
 
@@ -430,7 +430,7 @@ function Home() {
                 <div className={`button-container position-absolute ${buttonPosition}`}>
                     {showButton && (
                         <button className="btn btn-success" onClick={handleUserClick}>
-                            Bấm vào đây!
+                            Bấm!
                         </button>
                     )}
                 </div>
