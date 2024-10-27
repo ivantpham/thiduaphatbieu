@@ -170,31 +170,104 @@ function Home() {
         setShowButton(false); // Ẩn nút ngay từ đầu
 
         const positions = [
-            "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right",
-            "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right", "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right",
-            "left", "center", "right",
-            "top-left", "top-center", "top-right",
-            "bottom-left", "bottom-center", "bottom-right"
+            "left", "right", "left", "center"   // index 3: "center"
         ];
 
-        // Hiển thị từng vị trí và truyền vào Firebase
-        for (let i = 0; i < positions.length; i++) {
-            setButtonPosition(positions[i]);
-            await set(ref(database, 'competition/buttonPosition'), positions[i]); // Lưu vào Firebase mỗi lần
+        const positions1 = [
+            "right", "left", "right", "left" // index 3: "center"
+        ];
 
-            await new Promise(resolve => setTimeout(resolve, 25)); // Chờ 50ms giữa các lần thay đổi vị trí
+        const positions2 = [
+            "center", "left", "right", "center" // index 3: "center"
+        ];
+
+        const positions3 = [
+            "left", "right", "center", "left"    // index 3: "left"
+        ];
+
+        const positions4 = [
+            "right", "left", "center", "right"  // index 3: "right"
+        ];
+
+        const positions5 = [
+            "left", "center", "right", "left"   // index 3: "left"
+        ];
+
+        const positions6 = [
+            "right", "left", "center", "right"    // index 3: "right"
+        ];
+
+        const positions7 = [
+            "left", "right", "center", "left"  // index 3: "left"
+        ];
+
+        const positions8 = [
+            "right", "center", "left", "center"  // index 3: "right"
+        ];
+
+
+        // Trạng thái để lưu trữ vị trí đã chọn trước đó
+        let lastSelectedPositions = localStorage.getItem('lastSelectedPositions') || 'positions';
+
+        // Hàm để lấy positions tiếp theo
+        const getNextPositions = () => {
+            if (lastSelectedPositions === 'positions') {
+                lastSelectedPositions = 'positions1';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions1;
+            } else if (lastSelectedPositions === 'positions1') {
+                lastSelectedPositions = 'positions2';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions2;
+            } else if (lastSelectedPositions === 'positions2') {
+                lastSelectedPositions = 'positions3';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions3;
+            } else if (lastSelectedPositions === 'positions3') {
+                lastSelectedPositions = 'positions4';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions4;
+            } else if (lastSelectedPositions === 'positions4') {
+                lastSelectedPositions = 'positions5';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions5;
+            } else if (lastSelectedPositions === 'positions5') {
+                lastSelectedPositions = 'positions6';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions6;
+            } else if (lastSelectedPositions === 'positions6') {
+                lastSelectedPositions = 'positions7';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions7;
+            } else if (lastSelectedPositions === 'positions7') {
+                lastSelectedPositions = 'positions8';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions8;
+            } else {
+                lastSelectedPositions = 'positions';
+                localStorage.setItem('lastSelectedPositions', lastSelectedPositions);
+                return positions;
+            }
+        };
+
+        // Lấy positions tiếp theo
+        const selectedPositions = getNextPositions();
+
+        // Thực hiện vòng lặp for mà không cần xáo trộn
+        for (let i = 0; i < selectedPositions.length; i++) {
+            setButtonPosition(selectedPositions[i]);
+            await set(ref(database, 'competition/buttonPosition'), selectedPositions[i]); // Lưu vào Firebase mỗi lần
+            await new Promise(resolve => setTimeout(resolve, 25)); // Chờ 25ms giữa các lần thay đổi vị trí
         }
 
         // Sau khi dịch chuyển xong, cập nhật vào Firebase để hiện nút
         await set(ref(database, 'competition/showButton'), true); // Cập nhật vào Firebase
         setShowButton(true); // Hiện nút cho người dùng
     };
+
+
+
+
 
 
 
@@ -299,7 +372,7 @@ function Home() {
             {!user || !user.email ? (
                 <div className="position-absolute top-0 end-0 p-3">
                     <button
-                        className="btn btn-primary"
+                        className="btn btn-primary btn-login-home"
                         onClick={() => setShowLoginPopup(true)} // Mở popup khi nhấn vào
                     >
                         Đăng Nhập
@@ -312,7 +385,7 @@ function Home() {
             ) : (
                 <div className="user-greeting position-absolute top-0 end-0 p-3">
                     <button
-                        className="btn btn-light dropdown-toggle"
+                        className="btn btn-light dropdown-toggle btn-hello-home"
                         onClick={() => setShowDropdown(!showDropdown)}
                     >
                         Chào, {userName}

@@ -70,7 +70,7 @@
 }
 
 /* Nhóm trường nhập liệu */
-.login-form-group {
+.login-form-group-login {
     margin-bottom: 15px;
     /* Khoảng cách giữa các trường */
     width: 100%;
@@ -150,4 +150,29 @@
     /* Bo góc nhẹ */
     color: #000;
     /* Màu chữ */
+}
+
+::placeholder {
+    color: #ccc;
+    /* Màu placeholder để hiển thị rõ trên nền tối */
+    opacity: 1;
+    /* Đảm bảo độ trong suốt là 100% */
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #ccc;
+}
+
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #ccc;
+}
+
+.login-input-email,
+.login-input-password {
+    color: #fff;
+    /* Đổi màu chữ thành trắng */
+    background-color: #6c757d;
+    /* Đặt màu nền sáng hơn */
 }
