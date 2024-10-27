@@ -170,39 +170,39 @@ function Home() {
         setShowButton(false); // Ẩn nút ngay từ đầu
 
         const positions = [
-            "left", "right", "left", "center", "right"   // index 3: "center"
+            "left", "right", "top", "center", "bottom", "middle"   // index 3: "center"
         ];
 
         const positions1 = [
-            "right", "left", "right", "left", "center" // index 3: "center"
+            "middle", "bottom", "left", "top", "right", "center"
         ];
 
         const positions2 = [
-            "center", "left", "right", "center", "right" // index 3: "center"
+            "top", "left", "center", "right", "middle", "bottom"
         ];
 
         const positions3 = [
-            "left", "right", "center", "right", "left"   // index 3: "left"
+            "right", "top", "middle", "bottom", "center", "left"
         ];
 
         const positions4 = [
-            "right", "left", "center", "right", "left"  // index 3: "right"
+            "left", "bottom", "center", "middle", "right", "top"
         ];
 
         const positions5 = [
-            "left", "center", "right", "left", "center"   // index 3: "left"
+            "middle", "top", "right", "left", "bottom", "center"
         ];
 
         const positions6 = [
-            "right", "left", "center", "right", "center"   // index 3: "right"
+            "top", "middle", "right", "center", "left", "bottom"
         ];
 
         const positions7 = [
-            "left", "right", "center", "left", "right"  // index 3: "left"
+            "bottom", "left", "top", "middle", "center", "right"
         ];
 
         const positions8 = [
-            "right", "center", "left", "center", "left"  // index 3: "right"
+            "middle", "right", "top", "bottom", "left", "center"
         ];
 
 
