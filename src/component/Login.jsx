@@ -13,7 +13,6 @@ function LoginPopup() {
     const [email, setEmail] = useState(""); // State cho email
     const [password, setPassword] = useState(""); // State cho mật khẩu
     const [errorMessage, setErrorMessage] = useState(""); // State cho thông báo lỗi
-    const [showPassword, setShowPassword] = useState(false); // State để kiểm soát hiển thị mật khẩu
 
     const closeLoginPopup = () => {
         setShowLoginPopup(false); // Đặt lại state showLoginPopup thành false để ẩn pop-up
@@ -54,59 +53,47 @@ function LoginPopup() {
 
     return (
         <div className={`login-container ${!showLoginPopup ? 'd-none' : ''}`}>
-            <div className="login-popup shadow-lg p-4 rounded">
-                <h2 className="login-header text-center mb-4">Chào mừng Bạn!</h2>
-                <p className="login-subtext text-center mb-3">Vui lòng đăng nhập để tiếp tục</p>
-                <form onSubmit={handleLogin}>
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            className="form-control-login"
-                            placeholder="Nhập email của bạn"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                                console.log("Email nhập vào:", e.target.value); // Log email nhập vào
-                            }}
-
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">Mật khẩu</label>
-                        <input
-                            type={showPassword ? "text" : "password"} // Kiểm soát kiểu nhập
-                            id="password"
-                            className="form-control-login"
-                            placeholder="Nhập mật khẩu"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)} // Đảm bảo cập nhật giá trị đúng
-                            required
-                        />
-                        <div className="form-check">
+            <div className="login-popup">
+                <div className="login-popup-content p-4">
+                    <h2 className="login-header text-center">Chào mừng Bạn!</h2>
+                    <p className="login-subtext text-center">Vui lòng đăng nhập để tiếp tục</p>
+                    <form onSubmit={handleLogin}>
+                        <div className="login-form-group">
+                            <label htmlFor="email" className="form-label">Email</label>
                             <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id="showPassword"
-                                checked={showPassword}
-                                onChange={() => setShowPassword(!showPassword)} // Đổi trạng thái hiển thị mật khẩu
+                                type="email"
+                                id="email"
+                                className="login-input-email form-control"
+                                placeholder="Nhập email của bạn"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)} // Đảm bảo cập nhật giá trị đúng
+                                required
                             />
-                            <label className="form-check-label" htmlFor="showPassword">Hiển thị mật khẩu</label>
                         </div>
-                    </div>
-                    {errorMessage && (
-                        <div className="alert alert-danger text-center mt-2">{errorMessage}</div> // Hiển thị thông báo lỗi
-                    )}
-                    <button type="submit" className="btn btn-primary w-100 mt-3">Đăng nhập</button>
-                </form>
-                <p className="contact-info text-center mt-3">
-                    Nếu chưa có tài khoản, vui lòng liên hệ Ban Điều Hành
-                </p>
-                <button className="btn btn-secondary w-100 mt-2" onClick={closeLoginPopup}>
-                    Đóng
-                </button>
+                        <div className="login-form-group">
+                            <label htmlFor="password" className="form-label">Mật khẩu</label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="login-input-password form-control"
+                                placeholder="Nhập mật khẩu"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)} // Đảm bảo cập nhật giá trị đúng
+                                required
+                            />
+                        </div>
+                        {errorMessage && (
+                            <p className="text-danger text-center">{errorMessage}</p> // Hiển thị thông báo lỗi
+                        )}
+                        <button type="submit" className="login-submit-button btn btn-success w-100">Đăng nhập</button>
+                    </form>
+                    <p className="contact-info text-center">
+                        Nếu chưa có tài khoản, vui lòng liên hệ Ban Điều Hành
+                    </p>
+                    <button className="close-button btn btn-secondary w-100" onClick={closeLoginPopup}>
+                        Đóng
+                    </button>
+                </div>
             </div>
         </div>
     );
